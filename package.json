@@ -23,7 +23,7 @@
   },
   "scripts": {
     "postinstall": "npm run models:pull",
-    "models:pull": "node-llama-cpp pull --dir ./models \"https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf\"",
+    "models:pull": "node-llama-cpp pull --dir ./models \"https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/qwen2.5-coder-1.5b-instruct-q4_0.gguf\"",
     "start": "vite-node ./src/index.ts",
     "start:build": "node ./dist/index.ts",
     "prebuild": "rimraf ./dist ./tsconfig.tsbuildinfo",
@@ -47,6 +47,7 @@
     "@types/dotenv": "^6.1.1",
     "@types/html-to-text": "^9.0.4",
     "@types/imapflow": "^1.0.19",
+    "@types/jsdom": "^21.1.7",
     "@types/mailparser": "^3.4.5",
     "@types/node": "^22.12.0",
     "dotenv": "^16.4.7",

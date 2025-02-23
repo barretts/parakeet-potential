@@ -21,7 +21,12 @@ export class LLMController {
 
   async initialize() {
     const modelPath = await resolveModelFile(
-      "HuggingFaceTB.SmolLM2-135M-Instruct.Q8_0.gguf",
+      // "HuggingFaceTB.SmolLM2-135M-Instruct.Q8_0.gguf",
+      // "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+      // "smol_llama-220m-open_instruct.q8_0.gguf",
+      // "Llama-3.2-1B-Instruct-Q4_0.gguf",
+      "qwen2.5-coder-1.5b-instruct-q4_0.gguf",
+      // "granite-embedding-125m-english-Q6_K.gguf",
       modelsDirectory
     );
 
@@ -31,8 +36,8 @@ export class LLMController {
     this.model = await this.llama.loadModel({ modelPath, ctxSize: 8192 });
 
     this.optionsPrompt = {
-      maxTokens: 2560,
-      temperature: 1,
+      maxTokens: 256,
+      temperature: 0.5,
     };
   }
 
@@ -54,6 +59,16 @@ export class LLMController {
       systemPrompt:
         "Perform the task to the best of your ability. Think about the entire question before you respond.",
     });
+    this.initialChatHistory = this.session.getChatHistory();// [!code highlight]
+  }
+
+  async resetContext() {
+
+    // Clear the session cache
+    // await this.context.clearCache();
+
+    // Optionally, reset the context to start a new session
+    return await this.session.setChatHistory(this.initialChatHistory);// [!code highlight]
   }
 
   async prompt(question: string, options?: any) {
