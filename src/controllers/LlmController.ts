@@ -1,21 +1,25 @@
 import {
+  ChatHistoryItem,
   ChatMLChatWrapper,
   getLlama,
+  Llama,
   LlamaChatSession,
+  LlamaContext,
+  LlamaGrammar,
+  LlamaModel,
   resolveModelFile,
 } from "node-llama-cpp";
-import path from "path";
 import * as fs from "fs";
-import { fileURLToPath } from "url";
+import { modelsDirectory } from "../config/paths";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const modelsDirectory = path.join(__dirname, "..", "models");
-
-export class LLMController {
-  private model: any;
-  private llama: any;
-  private gmr: any;
+export default class LLMController {
+  private model?: LlamaModel;
+  private llama?: Llama;
+  private gmr?: LlamaGrammar;
   private optionsPrompt: any;
+  private session?: LlamaChatSession;
+  private initialChatHistory?: ChatHistoryItem[];
+  private context?: LlamaContext;
 
   constructor() { }
 
@@ -33,7 +37,7 @@ export class LLMController {
     this.llama = await getLlama({
       debug: true,
     });
-    this.model = await this.llama.loadModel({ modelPath, ctxSize: 8192 });
+    this.model = await this.llama.loadModel({ modelPath });
 
     this.optionsPrompt = {
       maxTokens: 256,
@@ -44,38 +48,33 @@ export class LLMController {
   async initGrammar() {
     const gbnfFilePath = "./boolean.gbnf";
     const gbnfContent = fs.readFileSync(gbnfFilePath, "utf-8");
-    this.gmr = await this.llama.createGrammar({ grammar: gbnfContent });
+    this.gmr = await this.llama?.createGrammar({ grammar: gbnfContent });
 
     this.optionsPrompt.grammar = this.gmr;
   }
 
   async createSession() {
-    console.log("createSession");
-    this.context = await this.model.createContext();
-    console.log("return llamachat sess");
+    this.context = await this.model?.createContext();
+    if (!this.context) throw new Error('context failed');
     this.session = new LlamaChatSession({
       contextSequence: this.context.getSequence(),
       chatWrapper: new ChatMLChatWrapper(),
       systemPrompt:
         "Perform the task to the best of your ability. Think about the entire question before you respond.",
     });
-    this.initialChatHistory = this.session.getChatHistory();// [!code highlight]
+    this.initialChatHistory = this.session.getChatHistory();
   }
 
   async resetContext() {
-
-    // Clear the session cache
-    // await this.context.clearCache();
-
-    // Optionally, reset the context to start a new session
-    return await this.session.setChatHistory(this.initialChatHistory);// [!code highlight]
+    if (!this.initialChatHistory) throw new Error('session not set');
+    return this.session?.setChatHistory(this.initialChatHistory);
   }
 
   async prompt(question: string, options?: any) {
-    return this.session.prompt(question, options || this.optionsPrompt);
+    return this.session?.prompt(question, options || this.optionsPrompt);
   }
 
   async preloadPrompt(question: string) {
-    return this.session.preloadPrompt(question);
+    return this.session?.preloadPrompt(question);
   }
 }
