@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { client, getLatestEmails, moveEmailsToFolder } from "./imapService";
-// import { loadObjectFromFileAsync, saveObjectToFileAsync } from "./exportImportEmailObject";
 import { simpleParser } from "mailparser";
 import { extractEnglishTextAndPunctuation, removeUrls, getKeyWithHighestValue } from "./util";
 import LLMController from "./controllers/LlmController";

@@ -34,10 +34,6 @@
     "clean": "rm -rf ./node_modules ./dist ./tsconfig.tsbuildinfo ./models"
   },
   "dependencies": {
-    "chalk": "^5.4.1",
-    "html-email-to-text": "^1.0.4",
-    "html-to-text": "^9.0.5",
-    "imap-simple": "^5.1.0",
     "imapflow": "^1.0.181",
     "mailparser": "^3.7.2",
     "node-llama-cpp": "^3.5.0"
@@ -45,7 +41,6 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^3.0.1",
     "@types/dotenv": "^6.1.1",
-    "@types/html-to-text": "^9.0.4",
     "@types/imapflow": "^1.0.19",
     "@types/jsdom": "^21.1.7",
     "@types/mailparser": "^3.4.5",
